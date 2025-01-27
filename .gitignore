@@ -1,0 +1,37 @@
+# Xcode
+#
+# User-specific files
+.DS_Store
+.idea/
+xcuserdata/
+*.xcuserstate
+
+# Xcode specific folders
+DerivedData/
+build/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/
+
+# Swift Package Manager
+/.build
+/.swiftpm
+Package.pins
+Package.resolved
+
+# Xcode archive files
+*.xcarchive
+*.ipa
+
+# Logs
+*.log
+
+# Temporary files
+*.swp
+
+# Firebase configuration
+GoogleService-Info.plist
