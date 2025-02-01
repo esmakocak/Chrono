@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @Environment(\.presentationMode) var presentationMode
-    @State private var email = ""
-    @State private var password = ""
+    @State var username = ""
+    @State var email = ""
+    @State var password = ""
+
     
     var body: some View {
         ZStack {
@@ -19,21 +20,8 @@ struct SignUpView: View {
                 .navigationBarBackButtonHidden()
             
             VStack(spacing: 40) {
-                // MARK: Back Button (Chevron)
-                HStack {
-                    Button(action: {
-                        presentationMode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "chevron.backward")
-                            .foregroundStyle(Color("Burgundy"))
-                            .font(.system(size: 25))
-                    }
-                    .padding(.leading, 20)
-                    .padding(.top, 40)
-                    
-                    Spacer()
-                }
                 
+                Spacer()
                 
                 Text("Create Account")
                     .font(.title)
@@ -41,8 +29,16 @@ struct SignUpView: View {
                     .foregroundStyle(Color("Burgundy"))
                     .padding()
                 
-                
                 VStack(spacing: 20) {
+                    TextField("Name", text: $username)
+                        .bold()
+                        .textFieldStyle(.plain)
+                        .padding(.leading, 30)
+                    
+                    Rectangle()
+                        .frame(width: 350, height: 1)
+                        .foregroundStyle(Color("Burgundy"))
+                    
                     TextField("Email", text: $email)
                         .bold()
                         .textFieldStyle(.plain)
@@ -64,10 +60,10 @@ struct SignUpView: View {
                 
                 
                 // MARK: Sign Up Button
-                NavigationLink{
-                    Text("sa")
+                Button {
+                    
                 } label: {
-                    Text("Sign Up")
+                    Text("Sign In")
                         .font(.system(size: 25))
                         .fontWeight(.medium)
                         .foregroundColor(Color("BgColor"))
@@ -78,7 +74,7 @@ struct SignUpView: View {
                         .cornerRadius(50)
                 }
                 
-                Text("Already have an account? Log in")
+                NavigationLink("Already have an account? Log in", destination: LoginView())
                     .fontWeight(.semibold)
                     .foregroundColor(Color("Burgundy"))
                 
@@ -86,6 +82,7 @@ struct SignUpView: View {
                 Spacer()
                 
             }
+            .offset(y: -60)
         }
     }
 }

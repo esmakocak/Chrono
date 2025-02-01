@@ -9,14 +9,15 @@ import SwiftUI
 
 struct WelcomeView: View {
     var body: some View {
-        NavigationView {
+        
+        NavigationStack {
             ZStack {
                 Color("BgColor")
                     .ignoresSafeArea()
                 
                 VStack{
                     Spacer()
-
+                    
                     // MARK: Welcome Text
                     VStack(alignment: .leading) {
                         Group {
@@ -41,15 +42,15 @@ struct WelcomeView: View {
                     
                     // MARK: Description
                     Text("""
-                        Get things done, one task at a time.
-                        Set your time interval and start!
-                        """) .multilineTextAlignment(.center)
+                            Get things done, one task at a time.
+                            Set your time interval and start!
+                            """) .multilineTextAlignment(.center)
                         .foregroundStyle(Color("Burgundy"))
                         .font(.system(size: 15))
                         .padding(.top)
                     
                     Spacer()
-
+                    
                     // MARK: Get Started Button
                     NavigationLink{
                         SignUpView()
@@ -65,7 +66,7 @@ struct WelcomeView: View {
                     }
                     
                     Spacer()
-
+                    
                 }
                 
             }
@@ -74,5 +75,5 @@ struct WelcomeView: View {
 }
 
 #Preview {
-    WelcomeView()
+        WelcomeView()
 }
