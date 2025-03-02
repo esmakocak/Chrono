@@ -9,15 +9,14 @@ import SwiftUI
 
 struct WelcomeView: View {
     var body: some View {
-        
         NavigationStack {
             ZStack {
                 Color("BgColor")
                     .ignoresSafeArea()
-                
-                VStack{
+
+                VStack {
                     Spacer()
-                    
+
                     // MARK: Welcome Text
                     VStack(alignment: .leading) {
                         Group {
@@ -31,29 +30,31 @@ struct WelcomeView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.leading, 70)
-                    
+
                     Spacer()
-                    
+
                     // MARK: Image
                     Image("welcomeIllustration")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 450)
-                    
+
                     // MARK: Description
                     Text("""
-                            Get things done, one task at a time.
-                            Set your time interval and start!
-                            """) .multilineTextAlignment(.center)
+                        Get things done, one task at a time.
+                        Set your time interval and start!
+                        """)
+                        .multilineTextAlignment(.center)
                         .foregroundStyle(Color("Burgundy"))
                         .font(.system(size: 15))
                         .padding(.top)
-                    
+
                     Spacer()
-                    
+
                     // MARK: Get Started Button
-                    NavigationLink{
+                    NavigationLink {
                         SignUpView()
+                            .environmentObject(AuthManager()) 
                     } label: {
                         Text("Get Started")
                             .font(.system(size: 25))
@@ -64,16 +65,14 @@ struct WelcomeView: View {
                             .background(Color("Burgundy"))
                             .cornerRadius(50)
                     }
-                    
+
                     Spacer()
-                    
                 }
-                
             }
         }
     }
 }
 
 #Preview {
-        WelcomeView()
+    WelcomeView()
 }

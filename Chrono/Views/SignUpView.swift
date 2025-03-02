@@ -8,10 +8,11 @@
 import SwiftUI
 
 struct SignUpView: View {
-    @StateObject var authManager = AuthManager()
+    @EnvironmentObject var authManager: AuthManager
     @State private var email = ""
     @State private var password = ""
     @State private var errorMessage: String?
+    @State private var isLoading = false
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -72,24 +73,36 @@ struct SignUpView: View {
                 
                 // Kayıt Ol Butonu
                 Button {
+                    isLoading = true
                     authManager.signUp(email: email, password: password) { success, error in
-                        if success {
-                            print("Kayıt başarılı!")
-                        } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now()) {
+                            isLoading = false
+                        }
+                        if !success {
                             self.errorMessage = error
                         }
                     }
                 } label: {
-                    Text("Sign Up")
-                        .font(.system(size: 25))
-                        .fontWeight(.medium)
-                        .foregroundColor(Color("BgColor"))
-                        .frame(width: 240, height: 35)
-                        .padding()
-                        .background(Color("Burgundy"))
-                        .cornerRadius(50)
-                        .padding(.top, 5)
+                    if isLoading {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle(tint: .white))
+                            .frame(width: 240, height: 35)
+                            .padding()
+                            .background(Color("Burgundy").opacity(0.6))
+                            .cornerRadius(50)
+                    } else {
+                        Text("Sign Up")
+                            .font(.system(size: 25))
+                            .fontWeight(.medium)
+                            .foregroundColor(Color("BgColor"))
+                            .frame(width: 240, height: 35)
+                            .padding()
+                            .background(Color("Burgundy"))
+                            .cornerRadius(50)
+                            .padding(.top, 5)
+                    }
                 }
+                .disabled(isLoading)
                 .padding()
                 
                 NavigationLink("Already have an account? Log in", destination: LoginView())

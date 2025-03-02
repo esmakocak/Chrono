@@ -9,7 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     @Environment(\.presentationMode) var presentationMode
-    @StateObject var authManager = AuthManager()
+    @EnvironmentObject var authManager: AuthManager
     @State var email = ""
     @State var password = ""
     @State private var errorMessage: String?

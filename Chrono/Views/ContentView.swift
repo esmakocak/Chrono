@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var authManager = AuthManager()
+    @EnvironmentObject var authManager: AuthManager
 
     var body: some View {
         if authManager.user != nil {
             MainTaskView()
         } else {
-            WelcomeView() 
+            WelcomeView()
         }
     }
 }

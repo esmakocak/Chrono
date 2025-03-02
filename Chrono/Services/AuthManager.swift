@@ -13,18 +13,25 @@ class AuthManager: ObservableObject {
 
     init() {
         self.user = Auth.auth().currentUser
+
+        // Firebase Auth değişikliklerini dinle
+        Auth.auth().addStateDidChangeListener { [weak self] _, user in
+            DispatchQueue.main.async {
+                self?.user = user
+            }
+        }
     }
 
-    // Kullanıcı Kayıt Olma (Email & Password)
+    // Kullanıcı Kayıt Olma
     func signUp(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
-            if let error = error {
-                completion(false, error.localizedDescription)
-            } else {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(false, error.localizedDescription)
+                } else {
                     self.user = result?.user
+                    completion(true, nil)
                 }
-                completion(true, nil)
             }
         }
     }
@@ -32,13 +39,13 @@ class AuthManager: ObservableObject {
     // Kullanıcı Giriş Yapma
     func signIn(email: String, password: String, completion: @escaping (Bool, String?) -> Void) {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
-            if let error = error {
-                completion(false, error.localizedDescription)
-            } else {
-                DispatchQueue.main.async {
+            DispatchQueue.main.async {
+                if let error = error {
+                    completion(false, error.localizedDescription)
+                } else {
                     self.user = result?.user
+                    completion(true, nil)
                 }
-                completion(true, nil)
             }
         }
     }
