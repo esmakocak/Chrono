@@ -38,6 +38,9 @@ class ValidationViewModel: ObservableObject {
         if password.isEmpty {
             passwordError = "Please fill out this field."
             isValid = false
+        } else if password.count < 6 {
+            passwordError = "Password must be at least 6 characters."
+            isValid = false
         }
 
         // **Şifre tekrar doğrulama (Sadece kayıt sırasında)**
