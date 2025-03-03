@@ -9,9 +9,7 @@ import SwiftUI
 
 struct SignUpView: View {
     @EnvironmentObject var authManager: AuthManager
-    @State private var email = ""
-    @State private var password = ""
-    @State private var errorMessage: String?
+    @StateObject private var validationVM = ValidationViewModel()
     @State private var isLoading = false
     
     var body: some View {
@@ -31,7 +29,7 @@ struct SignUpView: View {
                     .padding(.leading, 10)
                     .padding(.bottom, 30)
                 
-                TextField("Email", text: $email)
+                TextField("Email", text: $validationVM.email)
                     .keyboardType(.emailAddress)
                     .autocapitalization(.none)
                     .bold()
@@ -41,9 +39,15 @@ struct SignUpView: View {
                 Rectangle()
                     .frame(width: 350, height: 1)
                     .foregroundStyle(Color("Burgundy"))
-                    .padding(.bottom, 30)
                 
-                SecureField("Password", text: $password)
+                Text(validationVM.emailError ?? " ")
+                         .foregroundColor(.red)
+                         .font(.caption)
+                         .frame(height: 15)
+                         .padding(.leading, 80)
+                         .frame(maxWidth: .infinity, alignment: .leading)
+
+                SecureField("Password", text: $validationVM.password)
                     .bold()
                     .textFieldStyle(.plain)
                     .padding(.leading, 80)
@@ -51,35 +55,40 @@ struct SignUpView: View {
                 Rectangle()
                     .frame(width: 350, height: 1)
                     .foregroundStyle(Color("Burgundy"))
-                    .padding(.bottom, 30)
                 
-                SecureField("Confirm Password", text: $password)
+                Text(validationVM.passwordError ?? " ")
+                         .foregroundColor(.red)
+                         .font(.caption)
+                         .frame(height: 15)
+                         .padding(.leading, 80)
+                         .frame(maxWidth: .infinity, alignment: .leading)
+                
+                SecureField("Confirm Password", text: $validationVM.confirmPassword)
                     .bold()
                     .textFieldStyle(.plain)
                     .padding(.leading, 80)
-                
-                // Hata Mesajı
-                if let errorMessage = errorMessage {
-                    Text(errorMessage)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                }
-                
+
                 Rectangle()
                     .frame(width: 350, height: 1)
                     .foregroundStyle(Color("Burgundy"))
-                    .padding(.bottom, 20)
                 
+                Text(validationVM.confirmPasswordError ?? " ")
+                         .foregroundColor(.red)
+                         .font(.caption)
+                         .frame(height: 15)
+                         .padding(.leading, 80)
+                         .frame(maxWidth: .infinity, alignment: .leading)
                 
-                // Kayıt Ol Butonu
                 Button {
-                    isLoading = true
-                    authManager.signUp(email: email, password: password) { success, error in
-                        DispatchQueue.main.asyncAfter(deadline: .now()) {
-                            isLoading = false
-                        }
-                        if !success {
-                            self.errorMessage = error
+                    if validationVM.validateForm(isSignUp: true) {
+                        isLoading = true
+                        authManager.signUp(email: validationVM.email, password: validationVM.password) { success, error in
+                            DispatchQueue.main.async {
+                                isLoading = false
+                                if !success {
+                                    validationVM.emailError = error 
+                                }
+                            }
                         }
                     }
                 } label: {
@@ -111,12 +120,12 @@ struct SignUpView: View {
                 
                 Spacer()
             }
-            .offset(y: -100)
+            .offset(y: -80)
             
             WaveShape()
                 .fill(Color("Peachy").opacity(0.3))
                 .frame(width: 500 , height: 225)
-                .scaleEffect(x: -1) // Dalga ters çevrildi
+                .scaleEffect(x: -1)
                 .offset(x: 130)
             
             WaveShape()
