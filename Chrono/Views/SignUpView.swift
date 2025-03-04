@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
+import GoogleSignIn
+import GoogleSignInSwift
 
 struct SignUpView: View {
     @EnvironmentObject var authManager: AuthManager
     @StateObject private var validationVM = ValidationViewModel()
     @State private var isLoading = false
+    @State private var isGoogleLoading = false
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -108,7 +112,7 @@ struct SignUpView: View {
                             .padding()
                             .background(Color("Burgundy"))
                             .cornerRadius(50)
-                            .padding(.top, 5)
+                            .padding(.top, -10)
                     }
                 }
                 .disabled(isLoading)
@@ -117,6 +121,41 @@ struct SignUpView: View {
                 NavigationLink("Already have an account? Log in", destination: LoginView())
                     .fontWeight(.semibold)
                     .foregroundColor(Color("Burgundy"))
+                    .padding(.bottom, 20)
+                
+                
+                HStack {
+                    Text("or sign in with: ")
+                        .foregroundColor(Color("Burgundy"))
+
+                    GoogleSignInButton(viewModel: GoogleSignInButtonViewModel(scheme: .light, style: .icon, state: .normal)) {
+                        if let rootVC = UIApplication.shared.windows.first?.rootViewController {
+                            isGoogleLoading = true
+                            authManager.signInGoogle(presenting: rootVC) { success, error in
+                                DispatchQueue.main.async {
+                                    isGoogleLoading = false
+                                    if success {
+                                        print("Google ile giriş başarılı")
+                                        presentationMode.wrappedValue.dismiss()
+                                    } else {
+                                        print("Google ile giriş hatası: \(error ?? "Bilinmeyen hata")")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .disabled(isGoogleLoading)
+                    .overlay(
+                        Group {
+                            if isGoogleLoading {
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle(tint: .gray))
+                                    .background(Color.white.opacity(0.8))
+                                    .clipShape(Circle())
+                            }
+                        }
+                    )
+                }
                 
                 Spacer()
             }

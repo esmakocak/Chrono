@@ -7,7 +7,8 @@
 
 import SwiftUI
 import Firebase
-
+import GoogleSignIn
+ 
 @main
 struct ChronoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
@@ -22,11 +23,23 @@ struct ChronoApp: App {
 }
 
 class AppDelegate: NSObject, UIApplicationDelegate {
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        FirebaseApp.configure()
-        print("succeed")
-        
+    
+    // Uygulama açıldığında çalışacak fonksiyon
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
+    ) -> Bool {
+        FirebaseApp.configure()  // Firebase başlat
+        print("Firebase Başarıyla Konfigüre Edildi")
         return true
+    }
+    
+    // Google Sign-In işlemleri için URL yönlendirmeyi işleyen fonksiyon
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
     }
 }

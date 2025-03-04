@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		40039E332D773B5A00F76425 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 40039E322D773B5A00F76425 /* GoogleSignIn */; };
+		40039E352D773B5A00F76425 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 40039E342D773B5A00F76425 /* GoogleSignInSwift */; };
 		40BEAFC62D4761B7005B1147 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 40BEAFC52D4761B7005B1147 /* FirebaseAuth */; };
 		40BEB0072D47ACF8005B1147 /* gitignore 2 in Resources */ = {isa = PBXBuildFile; fileRef = 40BEB0062D47ACF8005B1147 /* gitignore 2 */; };
 /* End PBXBuildFile section */
@@ -35,9 +37,22 @@
 		40BEB0062D47ACF8005B1147 /* gitignore 2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = "gitignore 2"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		40039E372D77402A00F76425 /* Exceptions for "Chrono" folder in "Chrono" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 40BEAF932D475DB5005B1147 /* Chrono */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		40BEAF962D475DB5005B1147 /* Chrono */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				40039E372D77402A00F76425 /* Exceptions for "Chrono" folder in "Chrono" target */,
+			);
 			path = Chrono;
 			sourceTree = "<group>";
 		};
@@ -58,7 +73,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				40039E352D773B5A00F76425 /* GoogleSignInSwift in Frameworks */,
 				40BEAFC62D4761B7005B1147 /* FirebaseAuth in Frameworks */,
+				40039E332D773B5A00F76425 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -129,6 +146,8 @@
 			name = Chrono;
 			packageProductDependencies = (
 				40BEAFC52D4761B7005B1147 /* FirebaseAuth */,
+				40039E322D773B5A00F76425 /* GoogleSignIn */,
+				40039E342D773B5A00F76425 /* GoogleSignInSwift */,
 			);
 			productName = Chrono;
 			productReference = 40BEAF942D475DB5005B1147 /* Chrono.app */;
@@ -214,6 +233,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				40BEAFC32D4760A4005B1147 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				40039E312D773AA300F76425 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 40BEAF952D475DB5005B1147 /* Products */;
@@ -420,6 +440,7 @@
 				DEVELOPMENT_TEAM = 79BT787T5X;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Chrono/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -450,6 +471,7 @@
 				DEVELOPMENT_TEAM = 79BT787T5X;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Chrono/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -583,6 +605,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		40039E312D773AA300F76425 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.0.0;
+			};
+		};
 		40BEAFC32D4760A4005B1147 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -594,6 +624,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		40039E322D773B5A00F76425 /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 40039E312D773AA300F76425 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+		40039E342D773B5A00F76425 /* GoogleSignInSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 40039E312D773AA300F76425 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignInSwift;
+		};
 		40BEAFC52D4761B7005B1147 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 40BEAFC32D4760A4005B1147 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
