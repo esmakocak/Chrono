@@ -34,4 +34,10 @@ class TaskViewModel: ObservableObject {
         let newTask = TaskModel(id: UUID(), title: title, duration: duration, isCompleted: false, date: Date())
         tasks.append(newTask)
     }
+    
+    func complete(task: TaskModel) {
+        if let index = tasks.firstIndex(of: task) {
+            tasks[index].isCompleted = true
+        }
+    }
 }

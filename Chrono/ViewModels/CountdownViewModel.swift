@@ -14,46 +14,55 @@ class CountdownViewModel: ObservableObject {
     
     @Published var timeRemaining: TimeInterval
     @Published var isRunning = true
-
+    
+    var onCountdownFinished: (() -> Void)?
+    
+    
     var progress: CGFloat {
         CGFloat(1 - (timeRemaining / task.duration))
     }
-
+    
     var formattedTime: String {
-        let minutes = Int(timeRemaining) / 60
-        let seconds = Int(timeRemaining) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
-    }
+        let clamped = max(0, Int(timeRemaining)) 
+        let hours = clamped / 3600
+        let minutes = (clamped % 3600) / 60
+        let seconds = clamped % 60
 
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    
     init(task: TaskModel) {
         self.task = task
         self.timeRemaining = task.duration
     }
-
+    
     func startTimer() {
         guard timer == nil else { return }
-
+        
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             guard let self = self, self.isRunning else { return }
-
+            
             if self.timeRemaining > 0 {
                 self.timeRemaining -= 1
             } else {
                 self.stopTimer()
-                // TODO: Bitince görev tamamlandı işaretleme yapılabilir
+                self.timeRemaining = 0
+                DispatchQueue.main.async {
+                    self.onCountdownFinished?()
+                }
             }
         }
     }
-
+    
     func stopTimer() {
         timer?.invalidate()
         timer = nil
     }
-
+    
     func toggleTimer() {
         isRunning.toggle()
     }
-
+    
     deinit {
         stopTimer()
     }

@@ -10,6 +10,8 @@ import SwiftUI
 struct CountdownView: View {
     @ObservedObject var viewModel: CountdownViewModel
     @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var taskViewModel: TaskViewModel
+    @State private var showCompletedAlert = false
 
     var body: some View {
         ZStack {
@@ -75,9 +77,21 @@ struct CountdownView: View {
         .navigationBarBackButtonHidden(true)
         .onAppear {
             viewModel.startTimer()
+
+            viewModel.onCountdownFinished = {
+                taskViewModel.complete(task: viewModel.task)
+                showCompletedAlert = true
+            }
         }
         .onDisappear {
             viewModel.stopTimer()
+        }
+        .alert("Task Completed 🎉", isPresented: $showCompletedAlert) {
+            Button("OK") {
+                dismiss()
+            }
+        } message: {
+            Text("“\(viewModel.task.title)” has been marked as completed.")
         }
     }
 }
@@ -91,5 +105,6 @@ struct CountdownView: View {
             isCompleted: false,
             date: Date()
         )))
+        .environmentObject(TaskViewModel()) // 👈 Bunu ekle
     }
 }

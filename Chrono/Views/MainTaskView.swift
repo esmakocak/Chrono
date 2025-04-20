@@ -84,13 +84,19 @@ struct MainTaskView: View {
                                 
                                 Spacer()
                                 
-                                NavigationLink {
-                                    CountdownView(viewModel: CountdownViewModel(task: task))
-                                } label: {
+                                if !task.isCompleted {
+                                    NavigationLink {
+                                        CountdownView(viewModel: CountdownViewModel(task: task))
+                                            .environmentObject(viewModel)
+                                    } label: {
+                                        Image(systemName: "play.fill")
+                                            .foregroundColor(Color("Burgundy"))
+                                    }
+                                    .buttonStyle(.plain)
+                                } else {
                                     Image(systemName: "play.fill")
-                                        .foregroundColor(Color("Burgundy"))
+                                        .foregroundColor(Color("Burgundy").opacity(0.4))
                                 }
-                                .buttonStyle(.plain)
                             }
                             .padding()
                             .background(Color("LightPeach"))

@@ -71,7 +71,7 @@ struct AddTaskView: View {
                     .frame(width: 150)
 
                     Picker("Dakika", selection: $selectedMinutes) {
-                        ForEach([0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { minute in
+                        ForEach([0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { minute in
                             Text("\(minute) dk").tag(minute)
                         }
                     }
