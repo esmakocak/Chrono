@@ -41,32 +41,46 @@ struct MainTaskView: View {
                 
                 // Task list
                 VStack(spacing: 15) {
-                    ForEach(viewModel.tasks.filter { $0.isToday }) { task in
-                        HStack {
+                    ForEach(sortedTasks) { task in
+                        HStack(alignment: .top) {
+                            // Tamamla butonu
                             Button {
-                                viewModel.toggleCompletion(for: task)
+                                withAnimation(.easeInOut(duration: 0.25)) {
+                                    viewModel.toggleCompletion(for: task)
+                                }
                             } label: {
                                 ZStack {
                                     Circle()
-                                        .stroke(Color("Burgundy"), lineWidth: 3)
                                         .frame(width: 25, height: 25)
-                                    
+                                        .foregroundColor(task.isCompleted ? Color("Burgundy") : .clear)
+                                        .overlay(
+                                            Circle()
+                                                .stroke(Color("Burgundy"), lineWidth: 3)
+                                        )
+                                        .animation(.easeInOut(duration: 0.25), value: task.isCompleted)
+
                                     if task.isCompleted {
                                         Image(systemName: "checkmark")
+                                            .font(.system(size: 12, weight: .bold))
                                             .foregroundColor(.white)
-                                            .font(.system(size: 12))
-                                            .padding(6)
-                                            .background(Circle().fill(Color("Burgundy")))
+                                            .transition(.scale.combined(with: .opacity))
                                     }
                                 }
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            .buttonStyle(.plain)
                             
-                            Text(task.title)
-                                .strikethrough(task.isCompleted)
-                                .font(.system(size: 18))
-                                .foregroundColor(.black)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(task.title)
+                                    .strikethrough(task.isCompleted)
+                                    .font(.system(size: 18))
+                                    .foregroundColor(.black)
+                                
+                                Text(task.formattedDuration)
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                            }
+                            
+                            Spacer()
                             
                             Image(systemName: "play.fill")
                                 .foregroundColor(Color("Burgundy"))
@@ -76,6 +90,7 @@ struct MainTaskView: View {
                         .cornerRadius(30)
                         .padding(.horizontal)
                     }
+                    
                 }
                 
                 Spacer()
@@ -109,6 +124,13 @@ struct MainTaskView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "E MMM dd"
         return formatter.string(from: Date())
+    }
+    
+    private var sortedTasks: [TaskModel] {
+        let todayTasks = viewModel.tasks.filter { $0.isToday }
+        let incomplete = todayTasks.filter { !$0.isCompleted }
+        let complete = todayTasks.filter { $0.isCompleted }
+        return incomplete + complete
     }
 }
 
