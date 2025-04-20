@@ -12,7 +12,7 @@ struct ContentView: View {
 
     var body: some View {
         if authManager.user != nil {
-            MainTaskView()
+            MainTabView()
         } else {
             WelcomeView()
         }
