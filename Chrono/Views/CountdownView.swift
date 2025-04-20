@@ -12,6 +12,7 @@ struct CountdownView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var taskViewModel: TaskViewModel
     @State private var showCompletedAlert = false
+    @State private var showExitConfirmation = false
 
     var body: some View {
         ZStack {
@@ -21,8 +22,8 @@ struct CountdownView: View {
                 // Top Bar
                 HStack {
                     Button {
-                        viewModel.stopTimer()
-                        dismiss()
+                        viewModel.isRunning = false
+                        showExitConfirmation = true
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.title2)
@@ -76,8 +77,6 @@ struct CountdownView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            viewModel.startTimer()
-
             viewModel.onCountdownFinished = {
                 taskViewModel.complete(task: viewModel.task)
                 showCompletedAlert = true
@@ -85,6 +84,18 @@ struct CountdownView: View {
         }
         .onDisappear {
             viewModel.stopTimer()
+            viewModel.timeRemaining = viewModel.task.duration
+        }
+        .alert("Are you sure you want to quit?", isPresented: $showExitConfirmation) {
+            Button("Yes, Quit", role: .destructive) {
+                viewModel.stopTimer()
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {
+                viewModel.isRunning = true 
+            }
+        } message: {
+            Text("If you leave now, your progress will be lost.")
         }
         .alert("Task Completed 🎉", isPresented: $showCompletedAlert) {
             Button("OK") {
