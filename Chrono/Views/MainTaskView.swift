@@ -9,15 +9,20 @@ import SwiftUI
 
 struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
-    @StateObject var viewModel = TaskViewModel()
+    @Environment(\.managedObjectContext) var context
+    @StateObject var viewModel: TaskViewModel
+
     @State private var isPresentingAddTask = false
-    @State private var selectedTask: TaskModel?
-    
+
+    init() {
+        _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
+    }
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color("BgColor").ignoresSafeArea()
-                
+
                 VStack {
                     // Top bar
                     HStack {
@@ -29,18 +34,18 @@ struct MainTaskView: View {
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(Color("Burgundy"))
                         }
-                        
+
                         Spacer()
-                        
+
                         Text(formattedDate)
                             .font(.system(size: 18, weight: .semibold))
                             .foregroundColor(Color("Burgundy"))
                     }
                     .padding(.horizontal)
                     .padding(.top)
-                    
+
                     Spacer(minLength: 20)
-                    
+
                     // Task list
                     VStack(spacing: 15) {
                         ForEach(sortedTasks) { task in
@@ -70,20 +75,20 @@ struct MainTaskView: View {
                                     }
                                 }
                                 .buttonStyle(.plain)
-                                
+
                                 VStack(alignment: .leading, spacing: 4) {
-                                    Text(task.title)
+                                    Text(task.title ?? "")
                                         .strikethrough(task.isCompleted)
                                         .font(.system(size: 18))
                                         .foregroundColor(.black)
-                                    
+
                                     Text(task.formattedDuration)
                                         .font(.footnote)
                                         .foregroundColor(.gray)
                                 }
-                                
+
                                 Spacer()
-                                
+
                                 if !task.isCompleted {
                                     NavigationLink {
                                         CountdownView(viewModel: CountdownViewModel(task: task))
@@ -104,10 +109,10 @@ struct MainTaskView: View {
                             .padding(.horizontal)
                         }
                     }
-                    
+
                     Spacer()
                 }
-                
+
                 // FAB
                 VStack {
                     Spacer()
@@ -132,14 +137,14 @@ struct MainTaskView: View {
             }
         }
     }
-    
+
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "E MMM dd"
         return formatter.string(from: Date())
     }
-    
-    private var sortedTasks: [TaskModel] {
+
+    private var sortedTasks: [TaskEntity] {
         let todayTasks = viewModel.tasks.filter { $0.isToday }
         let incomplete = todayTasks.filter { !$0.isCompleted }
         let complete = todayTasks.filter { $0.isCompleted }
@@ -150,4 +155,5 @@ struct MainTaskView: View {
 #Preview {
     MainTaskView()
         .environmentObject(AuthManager())
+        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

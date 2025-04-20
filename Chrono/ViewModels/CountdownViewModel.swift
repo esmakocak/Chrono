@@ -9,11 +9,11 @@ import Foundation
 import Combine
 
 class CountdownViewModel: ObservableObject {
-    let task: TaskModel
+    let task: TaskEntity
     private var timer: Timer?
     
     @Published var timeRemaining: TimeInterval
-    @Published var isRunning = true
+    @Published var isRunning = false
     
     var onCountdownFinished: (() -> Void)?
     
@@ -31,7 +31,7 @@ class CountdownViewModel: ObservableObject {
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
-    init(task: TaskModel) {
+    init(task: TaskEntity) {
         self.task = task
         self.timeRemaining = task.duration
     }
@@ -60,6 +60,9 @@ class CountdownViewModel: ObservableObject {
     }
     
     func toggleTimer() {
+        if timer == nil {
+            startTimer() 
+        }
         isRunning.toggle()
     }
     

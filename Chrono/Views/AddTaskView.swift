@@ -54,7 +54,7 @@ struct AddTaskView: View {
                         .foregroundStyle(Color("Burgundy"))
                         .padding(.leading, 15)
                         .padding(.top, 35)
-                        .padding(.bottom, -20)
+                        .padding(.bottom, 5)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
                     Spacer()
@@ -64,7 +64,7 @@ struct AddTaskView: View {
                 HStack(spacing: 0) {
                     Picker("Saat", selection: $selectedHours) {
                         ForEach(0..<13, id: \.self) { hour in
-                            Text("\(hour) saat").tag(hour)
+                            Text("\(hour) hour").tag(hour)
                         }
                     }
                     .pickerStyle(.wheel)
@@ -72,7 +72,7 @@ struct AddTaskView: View {
 
                     Picker("Dakika", selection: $selectedMinutes) {
                         ForEach([0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { minute in
-                            Text("\(minute) dk").tag(minute)
+                            Text("\(minute) min").tag(minute)
                         }
                     }
                     .pickerStyle(.wheel)
@@ -96,7 +96,7 @@ struct AddTaskView: View {
                         .padding(.top, 30)
                 }
                 .disabled(title.isEmpty)
-            
+
                 Spacer()
             }
             .navigationBarBackButtonHidden(true)
@@ -109,5 +109,5 @@ struct AddTaskView: View {
 }
 
 #Preview {
-    AddTaskView(viewModel: TaskViewModel())
+    AddTaskView(viewModel: TaskViewModel(context: PersistenceController.shared.container.viewContext))
 }

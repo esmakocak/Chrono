@@ -35,7 +35,7 @@ struct CountdownView: View {
                 .padding(.top)
 
                 // Task Title
-                Text(viewModel.task.title)
+                Text(viewModel.task.title ?? "task")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(Color("Burgundy"))
                     .padding(.bottom, 20)
@@ -77,6 +77,7 @@ struct CountdownView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
+            
             viewModel.onCountdownFinished = {
                 taskViewModel.complete(task: viewModel.task)
                 showCompletedAlert = true
@@ -102,20 +103,23 @@ struct CountdownView: View {
                 dismiss()
             }
         } message: {
-            Text("“\(viewModel.task.title)” has been marked as completed.")
+            Text("“\(viewModel.task.title ?? "task")” has been marked as completed.")
         }
     }
 }
 
 #Preview {
-    NavigationStack {
-        CountdownView(viewModel: CountdownViewModel(task: TaskModel(
-            id: UUID(),
-            title: "Sample Task",
-            duration: 20,
-            isCompleted: false,
-            date: Date()
-        )))
-        .environmentObject(TaskViewModel()) // 👈 Bunu ekle
+    let context = PersistenceController.shared.container.viewContext
+    let task = TaskEntity(context: context)
+    task.id = UUID()
+    task.title = "Sample Task"
+    task.duration = 20
+    task.isCompleted = false
+    task.date = Date()
+
+    return NavigationStack {
+        CountdownView(viewModel: CountdownViewModel(task: task))
+            .environmentObject(TaskViewModel(context: context))
+            .environment(\.managedObjectContext, context)
     }
 }

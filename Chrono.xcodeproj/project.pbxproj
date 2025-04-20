@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		40039E332D773B5A00F76425 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 40039E322D773B5A00F76425 /* GoogleSignIn */; };
 		40039E352D773B5A00F76425 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 40039E342D773B5A00F76425 /* GoogleSignInSwift */; };
+		4034849B2DB526E000243CD7 /* ChronoDataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 403484992DB526E000243CD7 /* ChronoDataModel.xcdatamodeld */; };
 		40BEAFC62D4761B7005B1147 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 40BEAFC52D4761B7005B1147 /* FirebaseAuth */; };
 		40BEB0072D47ACF8005B1147 /* gitignore 2 in Resources */ = {isa = PBXBuildFile; fileRef = 40BEB0062D47ACF8005B1147 /* gitignore 2 */; };
 /* End PBXBuildFile section */
@@ -31,6 +32,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4034849A2DB526E000243CD7 /* ChronoDataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = ChronoDataModel.xcdatamodel; sourceTree = "<group>"; };
 		40BEAF942D475DB5005B1147 /* Chrono.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chrono.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BEAFA42D475DB7005B1147 /* ChronoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChronoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		40BEAFAE2D475DB7005B1147 /* ChronoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChronoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +101,7 @@
 		40BEAF8B2D475DB5005B1147 = {
 			isa = PBXGroup;
 			children = (
+				403484992DB526E000243CD7 /* ChronoDataModel.xcdatamodeld */,
 				40BEAF962D475DB5005B1147 /* Chrono */,
 				40BEAFA72D475DB7005B1147 /* ChronoTests */,
 				40BEAFB12D475DB7005B1147 /* ChronoUITests */,
@@ -277,6 +280,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4034849B2DB526E000243CD7 /* ChronoDataModel.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -640,6 +644,19 @@
 			productName = FirebaseAuth;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		403484992DB526E000243CD7 /* ChronoDataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				4034849A2DB526E000243CD7 /* ChronoDataModel.xcdatamodel */,
+			);
+			currentVersion = 4034849A2DB526E000243CD7 /* ChronoDataModel.xcdatamodel */;
+			path = ChronoDataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 40BEAF8C2D475DB5005B1147 /* Project object */;
 }

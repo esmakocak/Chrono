@@ -14,10 +14,14 @@ struct ChronoApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject var authManager = AuthManager()
     
+    let persistenceController = PersistenceController.shared
+
+    
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(authManager)
+                .environment(\.managedObjectContext, persistenceController.container.viewContext) 
         }
     }
 }

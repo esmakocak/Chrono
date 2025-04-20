@@ -7,37 +7,61 @@
 
 import Foundation
 import SwiftUI
+import CoreData
 
 class TaskViewModel: ObservableObject {
-    @Published var tasks: [TaskModel] = []
-    
-    init() {
-        loadSampleData()
+    @Published var tasks: [TaskEntity] = []
+
+    private let context: NSManagedObjectContext
+
+    init(context: NSManagedObjectContext = PersistenceController.shared.container.viewContext) {
+        self.context = context
+        fetchTasks()
     }
-    
-    func loadSampleData() {
-        tasks = [
-            TaskModel(id: UUID(), title: "Reading session", duration: 1800, isCompleted: false, date: Date()),
-            TaskModel(id: UUID(), title: "Sport session", duration: 3600, isCompleted: false, date: Date()),
-            TaskModel(id: UUID(), title: "Work on project", duration: 7200, isCompleted: true, date: Date()),
-            TaskModel(id: UUID(), title: "Clean up", duration: 1500, isCompleted: true, date: Date())
-        ]
-    }
-    
-    func toggleCompletion(for task: TaskModel) {
-        if let index = tasks.firstIndex(of: task) {
-            tasks[index].isCompleted.toggle()
+
+    func fetchTasks() {
+        let request: NSFetchRequest<TaskEntity> = TaskEntity.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TaskEntity.date, ascending: true)]
+
+        do {
+            tasks = try context.fetch(request)
+        } catch {
+            print("Görevler alınamadı: \(error.localizedDescription)")
         }
     }
-    
+
     func addTask(title: String, duration: TimeInterval) {
-        let newTask = TaskModel(id: UUID(), title: title, duration: duration, isCompleted: false, date: Date())
-        tasks.append(newTask)
+        let task = TaskEntity(context: context)
+        task.id = UUID()
+        task.title = title
+        task.duration = duration
+        task.date = Date()
+        task.isCompleted = false
+
+        saveContext()
     }
-    
-    func complete(task: TaskModel) {
-        if let index = tasks.firstIndex(of: task) {
-            tasks[index].isCompleted = true
+
+    func toggleCompletion(for task: TaskEntity) {
+        task.isCompleted.toggle()
+        saveContext()
+    }
+
+    func complete(task: TaskEntity) {
+        task.isCompleted = true
+        saveContext()
+    }
+
+    func delete(task: TaskEntity) {
+        context.delete(task)
+        saveContext()
+    }
+
+    private func saveContext() {
+        do {
+            try context.save()
+            fetchTasks() // Güncellemeleri anında yansıt
+        } catch {
+            print("Kaydetme hatası: \(error.localizedDescription)")
         }
     }
 }
