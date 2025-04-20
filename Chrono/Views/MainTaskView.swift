@@ -11,8 +11,8 @@ struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.managedObjectContext) var context
     @StateObject var viewModel: TaskViewModel
-
     @State private var isPresentingAddTask = false
+    
 
     init() {
         _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))

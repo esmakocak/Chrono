@@ -21,7 +21,7 @@ struct MainTabView: View {
             // ✅ Tasks
             MainTaskView()
                 .tabItem {
-                    Image(systemName: "widget.small")
+                    Image(systemName: "square.and.pencil")
                     Text("Tasks")
                 }
 
