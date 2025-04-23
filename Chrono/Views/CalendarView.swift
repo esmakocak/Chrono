@@ -125,34 +125,40 @@ struct CalendarView: View {
                                 .font(.subheadline)
                         } else {
                             // ✅ İstatistik yazıları
-                            VStack(alignment: .leading, spacing: 6) {
-                                (
-                                    Text("👩🏻‍💻 Completed ") +
-                                    Text("\(completed.count) out of \(all.count)")
-                                        .foregroundColor(Color("Burgundy"))
-                                        .fontWeight(.semibold) +
-                                    Text(" tasks.")
-                                )
-
-                                (
-                                    Text("🚀 Reached ") +
-                                    Text("\(percentage)%")
-                                        .foregroundColor(Color("Burgundy"))
-                                        .fontWeight(.semibold) +
-                                    Text(" of your goals.")
-                                )
-
-                                (
-                                    Text("🧠 Focused for ") +
-                                    Text(formattedTime)
-                                        .foregroundColor(Color("Burgundy"))
-                                        .fontWeight(.semibold) +
-                                    Text(".")
-                                )
+                            HStack {
+                                Rectangle()
+                                    .frame(width: 3, height: 80)
+                                    .foregroundStyle(Color("Burgundy"))
+                                
+                                VStack(alignment: .leading, spacing: 6) {
+                                    (
+                                        Text("👩🏻‍💻 Completed ") +
+                                        Text("\(completed.count) out of \(all.count)")
+                                            .foregroundColor(Color("Burgundy"))
+                                            .fontWeight(.semibold) +
+                                        Text(" tasks.")
+                                    )
+                                    
+                                    (
+                                        Text("🚀 Reached ") +
+                                        Text("\(percentage)%")
+                                            .foregroundColor(Color("Burgundy"))
+                                            .fontWeight(.semibold) +
+                                        Text(" of your goals.")
+                                    )
+                                    
+                                    (
+                                        Text("🧠 Focused for ") +
+                                        Text(formattedTime)
+                                            .foregroundColor(Color("Burgundy"))
+                                            .fontWeight(.semibold) +
+                                        Text(".")
+                                    )
+                                }
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            .font(.subheadline)
-                            .foregroundColor(.black)
-                            .frame(maxWidth: .infinity, alignment: .leading)
 
                             // ✅ / ❌ Görevler
                             VStack(alignment: .leading, spacing: 20) {
