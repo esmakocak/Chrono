@@ -10,16 +10,12 @@ import SwiftUI
 struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.managedObjectContext) var context
-    @StateObject var viewModel: TaskViewModel
+    @EnvironmentObject var viewModel: TaskViewModel
     @State private var isPresentingAddTask = false
     @State private var selectedTaskForCountdown: TaskEntity?
     @Environment(\.scenePhase) private var scenePhase
     @State private var currentDay = Calendar.current.startOfDay(for: Date())
     @State private var refreshTrigger = false
-    
-    init() {
-        _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
-    }
 
     var body: some View {
         NavigationStack {
@@ -167,8 +163,15 @@ struct MainTaskView: View {
     }
 }
 
+//#Preview {
+//    MainTaskView()
+//        .environmentObject(AuthManager())
+//        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+//}
+
 #Preview {
     MainTaskView()
+        .environmentObject(TaskViewModel(context: PersistenceController.shared.container.viewContext))
         .environmentObject(AuthManager())
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

@@ -9,12 +9,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var authManager: AuthManager
-    @StateObject var viewModel: TaskViewModel
+    @EnvironmentObject var viewModel: TaskViewModel
     @StateObject private var settingsVM = SettingsViewModel()
-
-    init() {
-        _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
-    }
 
     var body: some View {
         NavigationStack {
@@ -71,9 +67,16 @@ struct SettingsView: View {
         }
     }
 }
+//
+//#Preview {
+//    SettingsView()
+//        .environmentObject(AuthManager())
+//        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+//}
 
 #Preview {
     SettingsView()
+        .environmentObject(TaskViewModel(context: PersistenceController.shared.container.viewContext))
         .environmentObject(AuthManager())
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
