@@ -125,7 +125,6 @@ struct MainTaskView: View {
                                 .font(.system(size: 28))
                                 .frame(width: 60, height: 60)
                                 .background(Circle().fill(Color("Burgundy")))
-                                .shadow(radius: 5)
                         }
                         .padding()
                         .sheet(isPresented: $isPresentingAddTask) {

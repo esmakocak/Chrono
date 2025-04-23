@@ -7,66 +7,107 @@
 
 import Foundation
 import Combine
+import SwiftUI
 
 class CountdownViewModel: ObservableObject {
     let task: TaskEntity
-    private var timer: Timer?
     
-    @Published var timeRemaining: TimeInterval
+    @Published var timeRemaining: TimeInterval = 0
     @Published var isRunning = false
     
-    var onCountdownFinished: (() -> Void)?
+    @AppStorage("isDeepFocusModeEnabled") private var isDeepFocusModeEnabled: Bool = false
     
+    private var timer: Timer?
+    private var endDate: Date?
+    private var wasBackgrounded = false
+    
+    var onCountdownFinished: (() -> Void)?
     
     var progress: CGFloat {
         CGFloat(1 - (timeRemaining / task.duration))
     }
     
     var formattedTime: String {
-        let clamped = max(0, Int(timeRemaining)) 
+        let clamped = max(0, Int(timeRemaining))
         let hours = clamped / 3600
         let minutes = (clamped % 3600) / 60
         let seconds = clamped % 60
-
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
     init(task: TaskEntity) {
         self.task = task
         self.timeRemaining = task.duration
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(screenLocked), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
     }
     
     func startTimer() {
-        guard timer == nil else { return }
+        if endDate == nil {
+            endDate = Date().addingTimeInterval(timeRemaining)
+        }
+        isRunning = true
         
+        timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
-            guard let self = self, self.isRunning else { return }
-            
-            if self.timeRemaining > 0 {
-                self.timeRemaining -= 1
-            } else {
-                self.stopTimer()
-                self.timeRemaining = 0
-                DispatchQueue.main.async {
-                    self.onCountdownFinished?()
-                }
-            }
+            self?.updateTimeRemaining()
         }
     }
     
     func stopTimer() {
+        isRunning = false
         timer?.invalidate()
         timer = nil
     }
     
     func toggleTimer() {
-        if timer == nil {
-            startTimer() 
+        isRunning ? stopTimer() : startTimer()
+    }
+    
+    private func updateTimeRemaining() {
+        guard let endDate = endDate else { return }
+        timeRemaining = endDate.timeIntervalSinceNow
+        
+        if timeRemaining <= 0 {
+            timeRemaining = 0
+            stopTimer()
+            DispatchQueue.main.async {
+                self.onCountdownFinished?()
+            }
         }
-        isRunning.toggle()
+    }
+
+    // Yalnızca ekran kilitlenince tetiklenir
+    @objc private func screenLocked() {
+        if isDeepFocusModeEnabled {
+            print("🔒 Ekran kilitlendi (Deep Focus), sayaç devam ediyor.")
+            // Timer tarih bazlı zaten, durdurmaya gerek yok
+        }
+    }
+
+    // Uygulama arka plana geçerse
+    @objc private func didEnterBackground() {
+        wasBackgrounded = true
+        if isDeepFocusModeEnabled {
+            print("🛑 Deep Focus: Uygulama arka plana geçti, sayaç duruyor.")
+            stopTimer()
+        }
+    }
+
+    @objc private func willEnterForeground() {
+        if wasBackgrounded {
+            wasBackgrounded = false
+            if isDeepFocusModeEnabled && timeRemaining > 0 {
+                print("✅ Deep Focus: Uygulama geri geldi, timer başlıyor.")
+                updateTimeRemaining()
+                startTimer()
+            }
+        }
     }
     
     deinit {
-        stopTimer()
+        NotificationCenter.default.removeObserver(self)
     }
 }

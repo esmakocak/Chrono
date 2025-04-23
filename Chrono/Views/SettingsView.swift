@@ -11,56 +11,50 @@ struct SettingsView: View {
     @EnvironmentObject var authManager: AuthManager
     @StateObject var viewModel: TaskViewModel
     @StateObject private var settingsVM = SettingsViewModel()
-    
+
     init() {
         _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
                 Color("BgColor").ignoresSafeArea()
-                
+
                 VStack(spacing: 20) {
                     // Top bar
                     HStack {
                         Text("Settings")
-                            .font(.system(size: 18, weight: .semibold))
+                            .font(.system(size: 20, weight: .semibold))
                             .foregroundColor(Color("Burgundy"))
-                        
+
                         Spacer()
                     }
                     .padding(.horizontal, 25)
                     .padding(.top)
-                    
-                    // Settings Content
+
+                    // Content
                     ScrollView {
                         VStack(spacing: 20) {
-                            // Timer Mode Card
-                            VStack(spacing: 15) {
-                                HStack {
-                                    Image(systemName: settingsVM.isDeepFocusModeEnabled ? "timer.circle.fill" : "timer")
-                                        .font(.title2)
-                                        .foregroundColor(Color("Burgundy"))
-                                    
-                                    Text(settingsVM.isDeepFocusModeEnabled ? "Deep Focus Mode" : "Flexible Mode")
-                                        .font(.system(size: 18, weight: .semibold))
-                                        .foregroundColor(.black)
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.8)
-                                    
-                                    Spacer()
-                                    
-                                    Toggle("", isOn: $settingsVM.isDeepFocusModeEnabled)
-                                        .tint(Color("Burgundy"))
+                            // 🧠 Focus Mode Picker Card
+                            VStack(alignment: .leading, spacing: 15) {
+                                Text("⏰ Focus Mode ")
+                                    .font(.system(size: 18, weight: .semibold))
+                                    .foregroundColor(.black)
+
+                                Picker("Focus Mode", selection: $settingsVM.isDeepFocusModeEnabled) {
+                                    Text("Flexible").tag(false)
+                                    Text("Deep Focus").tag(true)
                                 }
-                                
-                                Text(settingsVM.isDeepFocusModeEnabled ?
-                                    "The countdown will pause when you leave the app." :
-                                    "The countdown continues even in background.")
+                                .pickerStyle(.segmented)
+                                .padding(.horizontal, 2)
+                                .tint(Color("Burgundy"))
+
+                                Text(settingsVM.isDeepFocusModeEnabled
+                                     ? "The countdown will pause when you leave the app."
+                                     : "The countdown continues even in background.")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
-
                                     .multilineTextAlignment(.leading)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
