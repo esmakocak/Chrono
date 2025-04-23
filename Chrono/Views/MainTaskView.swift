@@ -12,7 +12,7 @@ struct MainTaskView: View {
     @Environment(\.managedObjectContext) var context
     @StateObject var viewModel: TaskViewModel
     @State private var isPresentingAddTask = false
-    
+    @State private var selectedTaskForCountdown: TaskEntity?
 
     init() {
         _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
@@ -90,9 +90,8 @@ struct MainTaskView: View {
                                 Spacer()
 
                                 if !task.isCompleted {
-                                    NavigationLink {
-                                        CountdownView(viewModel: CountdownViewModel(task: task))
-                                            .environmentObject(viewModel)
+                                    Button {
+                                        selectedTaskForCountdown = task
                                     } label: {
                                         Image(systemName: "play.fill")
                                             .foregroundColor(Color("Burgundy"))
@@ -134,6 +133,10 @@ struct MainTaskView: View {
                         }
                     }
                 }
+            }
+            .fullScreenCover(item: $selectedTaskForCountdown) { task in
+                CountdownView(viewModel: CountdownViewModel(task: task))
+                    .environmentObject(viewModel)
             }
         }
     }
