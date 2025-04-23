@@ -108,23 +108,96 @@ struct CalendarView: View {
             if let selected = selectedDate {
                 let all = viewModel.tasksByDate()[selected] ?? []
                 let completed = all.filter { $0.isCompleted }
+                let incomplete = all.filter { !$0.isCompleted }
 
-                VStack(spacing: 6) {
-                    Text(selected.formatted(date: .long, time: .omitted))
-                        .font(.headline)
-                        .foregroundColor(Color("Burgundy"))
+                let totalSeconds = completed.reduce(0) { $0 + Int($1.duration) }
+                let hours = totalSeconds / 3600
+                let minutes = (totalSeconds % 3600) / 60
+                let formattedTime = hours > 0 ? "\(hours)h \(minutes)m" : "\(minutes)m"
+                let percentage = all.isEmpty ? 0 : Int(Double(completed.count) / Double(all.count) * 100)
 
-                    if all.isEmpty {
-                        Text("No tasks recorded on this day.")
-                            .foregroundColor(.gray)
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 16) {
+
+                        if all.isEmpty {
+                            Text("No tasks recorded on this day.")
+                                .foregroundColor(.gray)
+                                .font(.subheadline)
+                        } else {
+                            // ✅ İstatistik yazıları
+                            VStack(alignment: .leading, spacing: 6) {
+                                (
+                                    Text("👩🏻‍💻 Completed ") +
+                                    Text("\(completed.count) out of \(all.count)")
+                                        .foregroundColor(Color("Burgundy"))
+                                        .fontWeight(.semibold) +
+                                    Text(" tasks.")
+                                )
+
+                                (
+                                    Text("🚀 Reached ") +
+                                    Text("\(percentage)%")
+                                        .foregroundColor(Color("Burgundy"))
+                                        .fontWeight(.semibold) +
+                                    Text(" of your goals.")
+                                )
+
+                                (
+                                    Text("🧠 Focused for ") +
+                                    Text(formattedTime)
+                                        .foregroundColor(Color("Burgundy"))
+                                        .fontWeight(.semibold) +
+                                    Text(".")
+                                )
+                            }
                             .font(.subheadline)
-                    } else {
-                        Text("You completed \(completed.count) of \(all.count) tasks.")
                             .foregroundColor(.black)
-                            .font(.subheadline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            // ✅ / ❌ Görevler
+                            VStack(alignment: .leading, spacing: 20) {
+                                if !completed.isEmpty {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("✓ Completed Tasks")
+                                            .font(.subheadline)
+                                            .foregroundColor(Color("Burgundy"))
+                                            .bold()
+
+                                        ForEach(completed, id: \.self) { task in
+                                            Text(task.title ?? "")
+                                                .font(.footnote)
+                                                .padding(8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .background(Color("LightPeach"))
+                                                .cornerRadius(10)
+                                        }
+                                    }
+                                }
+
+                                if !incomplete.isEmpty {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("✕ Incomplete Tasks")
+                                            .font(.subheadline)
+                                            .foregroundColor(Color("Burgundy"))
+                                            .bold()
+
+                                        ForEach(incomplete, id: \.self) { task in
+                                            Text(task.title ?? "")
+                                                .font(.footnote)
+                                                .padding(8)
+                                                .frame(maxWidth: .infinity, alignment: .leading)
+                                                .background(Color("LightPeach").opacity(0.4))
+                                                .cornerRadius(10)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding(.top)
+                        }
                     }
+                    .padding(.horizontal)
+                    .padding(.top)
                 }
-                .padding(.top)
             }
 
             Spacer()
