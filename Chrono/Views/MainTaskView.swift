@@ -13,7 +13,10 @@ struct MainTaskView: View {
     @StateObject var viewModel: TaskViewModel
     @State private var isPresentingAddTask = false
     @State private var selectedTaskForCountdown: TaskEntity?
-
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var currentDay = Calendar.current.startOfDay(for: Date())
+    @State private var refreshTrigger = false
+    
     init() {
         _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
     }
@@ -137,6 +140,15 @@ struct MainTaskView: View {
                 CountdownView(viewModel: CountdownViewModel(task: task))
                     .environmentObject(viewModel)
             }
+            .onChange(of: scenePhase) { newPhase in
+                if newPhase == .active {
+                    let today = Calendar.current.startOfDay(for: Date())
+                    if today != currentDay {
+                        currentDay = today
+                        refreshTrigger.toggle()
+                    }
+                }
+            }
         }
     }
 
@@ -147,6 +159,7 @@ struct MainTaskView: View {
     }
 
     private var sortedTasks: [TaskEntity] {
+        _ = refreshTrigger
         let todayTasks = viewModel.tasks.filter { $0.isToday }
         let incomplete = todayTasks.filter { !$0.isCompleted }
         let complete = todayTasks.filter { $0.isCompleted }

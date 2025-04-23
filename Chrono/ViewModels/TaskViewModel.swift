@@ -64,4 +64,31 @@ class TaskViewModel: ObservableObject {
             print("Kaydetme hatası: \(error.localizedDescription)")
         }
     }
+    
+    func tasksByDate() -> [Date: [TaskEntity]] {
+        let calendar = Calendar.current
+        var grouped: [Date: [TaskEntity]] = [:]
+
+        for task in tasks {
+            if let date = task.date {
+                let day = calendar.startOfDay(for: date)
+                grouped[day, default: []].append(task)
+            }
+        }
+
+        return grouped
+    }
+
+    func completionStats() -> [Date: Double] {
+        let grouped = tasksByDate()
+        var stats: [Date: Double] = [:]
+
+        for (day, dayTasks) in grouped {
+            let completed = dayTasks.filter { $0.isCompleted }.count
+            let total = dayTasks.count
+            stats[day] = total == 0 ? 0.0 : Double(completed) / Double(total)
+        }
+
+        return stats
+    }
 }
