@@ -5,6 +5,8 @@ struct CalendarView: View {
     @EnvironmentObject var taskViewModel: TaskViewModel
     @StateObject private var vm: CalendarViewModel
 
+    @State private var isYearSelectionPresented = false
+
     init() {
         _vm = StateObject(wrappedValue: CalendarViewModel(viewModel: TaskViewModel(context: PersistenceController.shared.container.viewContext)))
     }
@@ -12,15 +14,22 @@ struct CalendarView: View {
     var body: some View {
         VStack(spacing: 16) {
             header
-            weekdayHeaders
-            dayGrid
-            if let selected = vm.selectedDate {
-                ScrollView {
-                    statsView(for: selected)
-                        .padding(.horizontal)
-                        .padding(.top)
+
+            if isYearSelectionPresented {
+                yearGrid
+            } else {
+                weekdayHeaders
+                dayGrid
+
+                if let selected = vm.selectedDate {
+                    ScrollView {
+                        statsView(for: selected)
+                            .padding(.horizontal)
+                            .padding(.top)
+                    }
                 }
             }
+
             Spacer()
         }
         .padding(.top)
@@ -29,20 +38,46 @@ struct CalendarView: View {
 
     private var header: some View {
         HStack {
-            Button(action: vm.goToPreviousMonth) {
-                Image(systemName: "chevron.left").foregroundColor(Color("Burgundy"))
+            Button {
+                withAnimation {
+                    if isYearSelectionPresented {
+                        vm.incrementYear(by: -1)
+                    } else {
+                        vm.goToPreviousMonth()
+                    }
+                }
+            } label: {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(Color("Burgundy"))
             }
 
             Spacer()
 
-            Text(vm.currentDate.formatted(.dateTime.year().month()))
+            Button {
+                withAnimation {
+                    isYearSelectionPresented.toggle()
+                }
+            } label: {
+                Text(isYearSelectionPresented ?
+                     String(calendar.component(.year, from: vm.currentDate)) :
+                     vm.currentDate.formatted(.dateTime.year().month()))
                 .font(.system(size: 22, weight: .bold))
                 .foregroundColor(Color("Burgundy"))
+            }
 
             Spacer()
 
-            Button(action: vm.goToNextMonth) {
-                Image(systemName: "chevron.right").foregroundColor(Color("Burgundy"))
+            Button {
+                withAnimation {
+                    if isYearSelectionPresented {
+                        vm.incrementYear(by: 1)
+                    } else {
+                        vm.goToNextMonth()
+                    }
+                }
+            } label: {
+                Image(systemName: "chevron.right")
+                    .foregroundColor(Color("Burgundy"))
             }
         }
         .padding(.horizontal)
@@ -79,7 +114,7 @@ struct CalendarView: View {
                             .font(.system(size: 14, weight: .semibold))
                     )
                     .overlay(
-                        Circle().stroke(Color.black, lineWidth: isSelected ? 3 : 0)
+                        Circle().stroke(Color.black, lineWidth: isSelected ? 2 : 0)
                     )
                     .onTapGesture {
                         withAnimation { vm.select(date) }
@@ -87,6 +122,31 @@ struct CalendarView: View {
             }
         }
         .padding(.horizontal)
+    }
+
+    private var yearGrid: some View {
+        let months = calendar.monthSymbols
+        let currentYear = calendar.component(.year, from: vm.currentDate)
+
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 20) {
+            ForEach(0..<12) { index in
+                Button {
+                    withAnimation {
+                        isYearSelectionPresented = false
+                        vm.setMonth(index, year: currentYear)
+                    }
+                } label: {
+                    Text(months[index])
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .background(Color("Burgundy"))
+                        .cornerRadius(10)
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top)
     }
 
     private func statsView(for date: Date) -> some View {
@@ -102,6 +162,7 @@ struct CalendarView: View {
                     Rectangle()
                         .frame(width: 3, height: 80)
                         .foregroundStyle(Color("Burgundy"))
+
                     VStack(alignment: .leading, spacing: 6) {
                         (
                             Text("👩🏻‍💻 Completed ") +
@@ -110,6 +171,7 @@ struct CalendarView: View {
                                 .fontWeight(.semibold) +
                             Text(" tasks.")
                         )
+
                         (
                             Text("🚀 Reached ") +
                             Text("\(percentage)%")
@@ -117,6 +179,7 @@ struct CalendarView: View {
                                 .fontWeight(.semibold) +
                             Text(" of your goals.")
                         )
+
                         (
                             Text("🧠 Focused for ") +
                             Text(formattedTime)

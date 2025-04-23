@@ -70,6 +70,20 @@ class CalendarViewModel: ObservableObject {
         currentDate = calendar.date(byAdding: .month, value: 1, to: currentDate) ?? currentDate
         selectedDate = nil
     }
+    
+    func setMonth(_ month: Int, year: Int) {
+        let components = DateComponents(year: year, month: month + 1) // Swift'te aylar 0 tabanlı değil
+        if let newDate = Calendar.current.date(from: components) {
+            currentDate = newDate
+            selectedDate = nil
+        }
+    }
+    
+    func incrementYear(by value: Int) {
+        if let newDate = Calendar.current.date(byAdding: .year, value: value, to: currentDate) {
+            currentDate = newDate
+        }
+    }
 
     func stats(for date: Date) -> (completed: [TaskEntity], incomplete: [TaskEntity], formattedTime: String, percentage: Int) {
         let all = viewModel.tasksByDate()[date] ?? []
