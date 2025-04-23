@@ -10,28 +10,33 @@ import SwiftUI
 
 struct MainTabView: View {
     @StateObject private var taskViewModel = TaskViewModel(context: PersistenceController.shared.container.viewContext)
+    @State private var selectedTab = 1
+
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             CalendarView()
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Calendar")
                 }
+                .tag(0)
 
             MainTaskView()
                 .tabItem {
                     Image(systemName: "square.and.pencil")
                     Text("Tasks")
                 }
+                .tag(1)
 
             SettingsView()
                 .tabItem {
                     Image(systemName: "gear")
                     Text("Settings")
                 }
+                .tag(2)
         }
-        .tint(Color("Burgundy"))
+        .accentColor(Color("Burgundy"))
         .environmentObject(taskViewModel)
     }
 }

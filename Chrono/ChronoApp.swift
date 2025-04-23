@@ -15,7 +15,15 @@ struct ChronoApp: App {
     @StateObject var authManager = AuthManager()
     
     let persistenceController = PersistenceController.shared
-
+    
+    init() {
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithOpaqueBackground()
+        tabBarAppearance.backgroundColor = UIColor(named: "BgColor")
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        UITabBar.appearance().tintColor = UIColor(named: "Burgundy") 
+    }
     
     var body: some Scene {
         WindowGroup {
