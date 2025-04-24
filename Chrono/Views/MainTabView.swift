@@ -15,7 +15,7 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            CalendarView()
+            CalendarView(viewModel: taskViewModel)
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Calendar")

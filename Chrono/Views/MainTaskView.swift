@@ -23,7 +23,7 @@ struct MainTaskView: View {
                 Color("BgColor").ignoresSafeArea()
 
                 VStack {
-                    // Top bar
+                    // 🔝 Top Bar
                     HStack {
                         Button {
                             authManager.signOut()
@@ -45,65 +45,21 @@ struct MainTaskView: View {
 
                     Spacer(minLength: 20)
 
-                    // Task list
+                    // ✅ Görev Listesi
                     VStack(spacing: 15) {
                         ForEach(sortedTasks) { task in
-                            HStack(alignment: .top) {
-                                // Tamamla butonu
-                                Button {
-                                    withAnimation(.easeInOut(duration: 0.25)) {
-                                        viewModel.toggleCompletion(for: task)
-                                    }
-                                } label: {
-                                    ZStack {
-                                        Circle()
-                                            .frame(width: 25, height: 25)
-                                            .foregroundColor(task.isCompleted ? Color("Burgundy") : .clear)
-                                            .overlay(
-                                                Circle()
-                                                    .stroke(Color("Burgundy"), lineWidth: 3)
-                                            )
-                                            .animation(.easeInOut(duration: 0.25), value: task.isCompleted)
-
-                                        if task.isCompleted {
-                                            Image(systemName: "checkmark")
-                                                .font(.system(size: 12, weight: .bold))
-                                                .foregroundColor(.white)
-                                                .transition(.scale.combined(with: .opacity))
-                                        }
-                                    }
+                            TaskCardView(
+                                task: task,
+                                onDelete: {
+                                    viewModel.delete(task: task)
+                                },
+                                onToggle: {
+                                    viewModel.toggleCompletion(for: task)
+                                },
+                                onStart: {
+                                    selectedTaskForCountdown = task
                                 }
-                                .buttonStyle(.plain)
-
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(task.title ?? "")
-                                        .strikethrough(task.isCompleted)
-                                        .font(.system(size: 18))
-                                        .foregroundColor(.black)
-
-                                    Text(task.formattedDuration)
-                                        .font(.footnote)
-                                        .foregroundColor(.gray)
-                                }
-
-                                Spacer()
-
-                                if !task.isCompleted {
-                                    Button {
-                                        selectedTaskForCountdown = task
-                                    } label: {
-                                        Image(systemName: "play.fill")
-                                            .foregroundColor(Color("Burgundy"))
-                                    }
-                                    .buttonStyle(.plain)
-                                } else {
-                                    Image(systemName: "play.fill")
-                                        .foregroundColor(Color("Burgundy").opacity(0.4))
-                                }
-                            }
-                            .padding()
-                            .background(Color("LightPeach"))
-                            .cornerRadius(30)
+                            )
                             .padding(.horizontal)
                         }
                     }
@@ -111,7 +67,7 @@ struct MainTaskView: View {
                     Spacer()
                 }
 
-                // FAB
+                // ➕ FAB
                 VStack {
                     Spacer()
                     HStack {

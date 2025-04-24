@@ -11,12 +11,14 @@ import SwiftUI
 class CalendarViewModel: ObservableObject {
     @Published var currentDate: Date = Date()
     @Published var selectedDate: Date?
-
     private let calendar = Calendar.current
-    private let viewModel: TaskViewModel
+    let viewModel: TaskViewModel
 
     init(viewModel: TaskViewModel) {
         self.viewModel = viewModel
+        let today = Calendar.current.startOfDay(for: Date())
+        self.currentDate = today
+        self.selectedDate = today
     }
 
     var currentMonthDates: [Date] {

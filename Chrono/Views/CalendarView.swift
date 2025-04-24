@@ -4,11 +4,10 @@ struct CalendarView: View {
     @Environment(\.calendar) var calendar
     @EnvironmentObject var taskViewModel: TaskViewModel
     @StateObject private var vm: CalendarViewModel
-
     @State private var isYearSelectionPresented = false
 
-    init() {
-        _vm = StateObject(wrappedValue: CalendarViewModel(viewModel: TaskViewModel(context: PersistenceController.shared.container.viewContext)))
+    init(viewModel: TaskViewModel) {
+        _vm = StateObject(wrappedValue: CalendarViewModel(viewModel: viewModel))
     }
 
     var body: some View {
