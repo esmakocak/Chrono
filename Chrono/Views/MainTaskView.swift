@@ -65,6 +65,8 @@ struct MainTaskView: View {
                             .swipeActions(edge: .trailing, allowsFullSwipe: true) {
                                 Button(role: .destructive) {
                                     viewModel.delete(task: task)
+                                    HapticsManager.shared.notify(.warning)
+
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }

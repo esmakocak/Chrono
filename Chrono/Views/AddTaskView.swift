@@ -84,6 +84,7 @@ struct AddTaskView: View {
                 Button(action: {
                     let totalSeconds = TimeInterval((selectedHours * 60 + selectedMinutes) * 60)
                     viewModel.addTask(title: title, duration: totalSeconds)
+                    HapticsManager.shared.notify(.success)
                     dismiss()
                 }) {
                     Text("Add Task")

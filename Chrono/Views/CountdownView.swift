@@ -77,9 +77,9 @@ struct CountdownView: View {
         }
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            
             viewModel.onCountdownFinished = {
                 taskViewModel.complete(task: viewModel.task)
+                HapticsManager.shared.notify(.success)
                 showCompletedAlert = true
             }
         }
