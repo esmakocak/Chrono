@@ -42,11 +42,11 @@ struct MainTaskView: View {
                     }
                     .padding(.horizontal)
                     .padding(.top)
+                    .padding(.bottom)
 
                     Spacer(minLength: 20)
 
-                    // ✅ Görev Listesi
-                    VStack(spacing: 15) {
+                    List {
                         ForEach(sortedTasks) { task in
                             TaskCardView(
                                 task: task,
@@ -60,9 +60,19 @@ struct MainTaskView: View {
                                     selectedTaskForCountdown = task
                                 }
                             )
-                            .padding(.horizontal)
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparator(.hidden)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    viewModel.delete(task: task)
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                }
+                            }
                         }
                     }
+                    .listStyle(.plain)
+                    .background(Color("BgColor"))
 
                     Spacer()
                 }
