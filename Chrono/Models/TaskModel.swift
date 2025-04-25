@@ -8,16 +8,11 @@
 import Foundation
 
 extension TaskEntity {
-//    var isToday: Bool {
-//        guard let date else { return false }
-//        return Calendar.current.isDateInToday(date)
-//    }
-
     var isToday: Bool {
-        guard let taskDate = self.date else { return false }
-        return Calendar.current.isDateInToday(taskDate)
+        guard let date else { return false }
+        return Calendar.current.isDateInToday(date)
     }
-    
+
     var formattedDuration: String {
         let totalMinutes = Int(duration / 60)
         let hours = totalMinutes / 60
@@ -30,3 +25,5 @@ extension TaskEntity {
         }
     }
 }
+
+

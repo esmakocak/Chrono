@@ -10,12 +10,13 @@ import SwiftUI
 struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.managedObjectContext) var context
-    @EnvironmentObject var viewModel: TaskViewModel
+    @StateObject var viewModel: TaskViewModel
     @State private var isPresentingAddTask = false
     @State private var selectedTaskForCountdown: TaskEntity?
-    @Environment(\.scenePhase) private var scenePhase
-    @State private var currentDay = Calendar.current.startOfDay(for: Date())
-    @State private var refreshTrigger = false
+
+    init() {
+        _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
+    }
 
     var body: some View {
         NavigationStack {
@@ -23,7 +24,7 @@ struct MainTaskView: View {
                 Color("BgColor").ignoresSafeArea()
 
                 VStack {
-                    // 🔝 Top Bar
+                    // Top bar
                     HStack {
                         Button {
                             authManager.signOut()
@@ -46,6 +47,7 @@ struct MainTaskView: View {
 
                     Spacer(minLength: 20)
 
+                    // Task list
                     List {
                         ForEach(sortedTasks) { task in
                             TaskCardView(
@@ -79,7 +81,7 @@ struct MainTaskView: View {
                     Spacer()
                 }
 
-                // ➕ FAB
+                // FAB
                 VStack {
                     Spacer()
                     HStack {
@@ -104,15 +106,6 @@ struct MainTaskView: View {
                 CountdownView(viewModel: CountdownViewModel(task: task))
                     .environmentObject(viewModel)
             }
-            .onChange(of: scenePhase) { newPhase in
-                if newPhase == .active {
-                    let today = Calendar.current.startOfDay(for: Date())
-                    if today != currentDay {
-                        currentDay = today
-                        refreshTrigger.toggle()
-                    }
-                }
-            }
         }
     }
 
@@ -123,7 +116,6 @@ struct MainTaskView: View {
     }
 
     private var sortedTasks: [TaskEntity] {
-        _ = refreshTrigger
         let todayTasks = viewModel.tasks.filter { $0.isToday }
         let incomplete = todayTasks.filter { !$0.isCompleted }
         let complete = todayTasks.filter { $0.isCompleted }
@@ -131,15 +123,8 @@ struct MainTaskView: View {
     }
 }
 
-//#Preview {
-//    MainTaskView()
-//        .environmentObject(AuthManager())
-//        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
-//}
-
 #Preview {
     MainTaskView()
-        .environmentObject(TaskViewModel(context: PersistenceController.shared.container.viewContext))
         .environmentObject(AuthManager())
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

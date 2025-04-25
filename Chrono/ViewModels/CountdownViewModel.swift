@@ -41,7 +41,6 @@ class CountdownViewModel: ObservableObject {
         
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(screenLocked), name: UIApplication.protectedDataWillBecomeUnavailableNotification, object: nil)
     }
     
     func startTimer() {
@@ -79,31 +78,15 @@ class CountdownViewModel: ObservableObject {
         }
     }
 
-    // Yalnızca ekran kilitlenince tetiklenir
-    @objc private func screenLocked() {
-        if isDeepFocusModeEnabled {
-            print("🔒 Ekran kilitlendi (Deep Focus), sayaç devam ediyor.")
-            // Timer tarih bazlı zaten, durdurmaya gerek yok
-        }
-    }
-
     // Uygulama arka plana geçerse
     @objc private func didEnterBackground() {
         wasBackgrounded = true
-        if isDeepFocusModeEnabled {
-            print("🛑 Deep Focus: Uygulama arka plana geçti, sayaç duruyor.")
-            stopTimer()
-        }
     }
 
     @objc private func willEnterForeground() {
         if wasBackgrounded {
             wasBackgrounded = false
-            if isDeepFocusModeEnabled && timeRemaining > 0 {
-                print("✅ Deep Focus: Uygulama geri geldi, timer başlıyor.")
-                updateTimeRemaining()
-                startTimer()
-            }
+
         }
     }
     
