@@ -10,13 +10,10 @@ import SwiftUI
 struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.managedObjectContext) var context
-    @StateObject var viewModel: TaskViewModel
+    @EnvironmentObject var viewModel: TaskViewModel
     @State private var isPresentingAddTask = false
     @State private var selectedTaskForCountdown: TaskEntity?
 
-    init() {
-        _viewModel = StateObject(wrappedValue: TaskViewModel(context: PersistenceController.shared.container.viewContext))
-    }
 
     var body: some View {
         NavigationStack {
