@@ -11,9 +11,11 @@ struct MainTaskView: View {
     @EnvironmentObject var authManager: AuthManager
     @Environment(\.managedObjectContext) var context
     @EnvironmentObject var viewModel: TaskViewModel
-    @State private var isPresentingAddTask = false
-    @State private var selectedTaskForCountdown: TaskEntity?
+    @Environment(\.scenePhase) private var scenePhase
 
+    @State private var isPresentingAddTask = false
+    @State private var selectedCountdownVM: CountdownViewModel?
+    @State private var today = Calendar.current.startOfDay(for: Date())
 
     var body: some View {
         NavigationStack {
@@ -56,7 +58,7 @@ struct MainTaskView: View {
                                     viewModel.toggleCompletion(for: task)
                                 },
                                 onStart: {
-                                    selectedTaskForCountdown = task
+                                    selectedCountdownVM = CountdownViewModel(task: task)
                                 }
                             )
                             .listRowInsets(EdgeInsets())
@@ -65,7 +67,6 @@ struct MainTaskView: View {
                                 Button(role: .destructive) {
                                     viewModel.delete(task: task)
                                     HapticsManager.shared.notify(.warning)
-
                                 } label: {
                                     Label("Delete", systemImage: "trash")
                                 }
@@ -99,9 +100,17 @@ struct MainTaskView: View {
                     }
                 }
             }
-            .fullScreenCover(item: $selectedTaskForCountdown) { task in
-                CountdownView(viewModel: CountdownViewModel(task: task))
+            .fullScreenCover(item: $selectedCountdownVM) { vm in
+                CountdownView(viewModel: vm)
                     .environmentObject(viewModel)
+            }
+            .onChange(of: scenePhase) { newPhase in
+                if newPhase == .active {
+                    let newDay = Calendar.current.startOfDay(for: Date())
+                    if today != newDay {
+                        today = newDay
+                    }
+                }
             }
         }
     }
@@ -118,10 +127,4 @@ struct MainTaskView: View {
         let complete = todayTasks.filter { $0.isCompleted }
         return incomplete + complete
     }
-}
-
-#Preview {
-    MainTaskView()
-        .environmentObject(AuthManager())
-        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }

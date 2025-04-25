@@ -9,7 +9,9 @@ import Foundation
 import Combine
 import SwiftUI
 
-class CountdownViewModel: ObservableObject {
+class CountdownViewModel: ObservableObject, Identifiable {
+    let id = UUID() // 👈 bunu ekliyoruz
+
     let task: TaskEntity
     
     @Published var timeRemaining: TimeInterval = 0
