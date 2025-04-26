@@ -21,21 +21,22 @@ struct TaskCardView: View {
             // DELETE BACKGROUND CIRCLE AS BUTTON
             HStack {
                 Spacer()
-                Button {
-                    withAnimation(.easeInOut) {
-                        onDelete()
-                    }
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(Color("Burgundy"))
-                            .frame(width: 50, height: 50)
+                ZStack {
+                    Circle()
+                        .fill(Color("Burgundy"))
+                        .frame(width: 50, height: 50)
+
+                    Button {
+                        withAnimation(.easeInOut) {
+                            onDelete()
+                        }
+                    } label: {
                         Image(systemName: "trash")
                             .foregroundColor(Color("BgColor"))
                             .font(.system(size: 20, weight: .bold))
                     }
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(.plain)
                 .padding(.trailing, 20)
             }
 
@@ -94,6 +95,7 @@ struct TaskCardView: View {
             .padding(.horizontal, 10)
             .offset(x: dragOffset.width + position.width)
             .contentShape(Rectangle())
+            .allowsHitTesting(position.width == 0) // 🧠 işte burası
             .highPriorityGesture(
                 DragGesture()
                     .onChanged { value in
