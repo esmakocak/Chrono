@@ -55,7 +55,9 @@ class CountdownViewModel: ObservableObject, Identifiable {
             endDate = Date().addingTimeInterval(timeRemaining)
         }
         isRunning = true
-        
+
+        updateTimeRemaining() // ⏱ İlk anlık güncelleme
+
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             self?.updateTimeRemaining()

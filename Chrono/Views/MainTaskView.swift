@@ -47,34 +47,26 @@ struct MainTaskView: View {
                     Spacer(minLength: 20)
 
                     // Task list
-                    List {
-                        ForEach(sortedTasks) { task in
-                            TaskCardView(
-                                task: task,
-                                onDelete: {
-                                    viewModel.delete(task: task)
-                                },
-                                onToggle: {
-                                    viewModel.toggleCompletion(for: task)
-                                },
-                                onStart: {
-                                    selectedCountdownVM = CountdownViewModel(task: task)
-                                }
-                            )
-                            .listRowInsets(EdgeInsets())
-                            .listRowSeparator(.hidden)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                Button(role: .destructive) {
-                                    viewModel.delete(task: task)
-                                    HapticsManager.shared.notify(.warning)
-                                } label: {
-                                    Label("Delete", systemImage: "trash")
-                                }
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(sortedTasks) { task in
+                                TaskCardView(
+                                    task: task,
+                                    onDelete: {
+                                        viewModel.delete(task: task)
+                                        HapticsManager.shared.notify(.warning)
+                                    },
+                                    onToggle: {
+                                        viewModel.toggleCompletion(for: task)
+                                    },
+                                    onStart: {
+                                        selectedCountdownVM = CountdownViewModel(task: task)
+                                    }
+                                )
                             }
                         }
+                        .padding(.top)
                     }
-                    .listStyle(.plain)
-                    .background(Color("BgColor"))
 
                     Spacer()
                 }
