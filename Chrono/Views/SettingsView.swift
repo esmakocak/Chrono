@@ -47,8 +47,8 @@ struct SettingsView: View {
                                 .tint(Color("Burgundy"))
 
                                 Text(settingsVM.isDeepFocusModeEnabled
-                                     ? "The countdown will pause when you leave the app."
-                                     : "The countdown continues even in background.")
+                                     ? "Your task progress will be lost if you leave the countdown."
+                                     : "Your task progress is saved even if you leave the countdown.")
                                     .font(.system(size: 14))
                                     .foregroundColor(.gray)
                                     .multilineTextAlignment(.leading)

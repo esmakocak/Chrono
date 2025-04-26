@@ -23,7 +23,11 @@ struct CountdownView: View {
                 HStack {
                     Button {
                         viewModel.isRunning = false
-                        showExitConfirmation = true
+                        if viewModel.isDeepFocusModeEnabled {
+                            showExitConfirmation = true
+                        } else {
+                            dismiss()
+                        }
                     } label: {
                         Image(systemName: "chevron.left")
                             .font(.title2)
@@ -85,7 +89,16 @@ struct CountdownView: View {
         }
         .onDisappear {
             viewModel.stopTimer()
-            viewModel.timeRemaining = viewModel.task.duration
+
+            if viewModel.isDeepFocusModeEnabled {
+                // Derin odak modundaysa süre sıfırlanır
+                viewModel.timeRemaining = viewModel.task.duration
+                viewModel.task.remainingTime = viewModel.task.duration
+            } else {
+                // Flexible Mode
+                viewModel.task.remainingTime = viewModel.timeRemaining
+            }
+            viewModel.saveTaskContext()
         }
         .alert("Are you sure you want to quit?", isPresented: $showExitConfirmation) {
             Button("Yes, Quit", role: .destructive) {

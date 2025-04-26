@@ -17,7 +17,7 @@ class CountdownViewModel: ObservableObject, Identifiable {
     @Published var timeRemaining: TimeInterval = 0
     @Published var isRunning = false
     
-    @AppStorage("isDeepFocusModeEnabled") private var isDeepFocusModeEnabled: Bool = false
+    @AppStorage("isDeepFocusModeEnabled") var isDeepFocusModeEnabled: Bool = false
     
     private var timer: Timer?
     private var endDate: Date?
@@ -39,8 +39,13 @@ class CountdownViewModel: ObservableObject, Identifiable {
     
     init(task: TaskEntity) {
         self.task = task
-        self.timeRemaining = task.duration
-        
+        if task.remainingTime > 0 && task.remainingTime < task.duration {
+            self.timeRemaining = task.remainingTime
+        } else {
+            self.timeRemaining = task.duration
+        }
+
+        // Bildirim gözlemleyicileri
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
     }
@@ -77,6 +82,14 @@ class CountdownViewModel: ObservableObject, Identifiable {
             DispatchQueue.main.async {
                 self.onCountdownFinished?()
             }
+        }
+    }
+    
+    func saveTaskContext() {
+        do {
+            try task.managedObjectContext?.save()
+        } catch {
+            print("Kalan süre kaydedilemedi: \(error.localizedDescription)")
         }
     }
 
