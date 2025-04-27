@@ -95,7 +95,6 @@ struct TaskCardView: View {
             .padding(.horizontal, 10)
             .offset(x: dragOffset.width + position.width)
             .contentShape(Rectangle())
-            .allowsHitTesting(position.width == 0) // 🧠 işte burası
             .highPriorityGesture(
                 DragGesture()
                     .onChanged { value in
