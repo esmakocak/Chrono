@@ -139,30 +139,17 @@ struct SettingsView: View {
                 .font(.system(size: 14))
                 .foregroundColor(.gray)
 
-            VStack(spacing: 10) {
+            Picker("Select Sound", selection: $settingsVM.selectedAmbientSound) {
                 ForEach(soundOptions) { sound in
-                    Button {
-                        settingsVM.selectedAmbientSound = sound.value
-                    } label: {
-                        HStack {
-                            Text(sound.label)
-                                .foregroundColor(.black)
-                            Spacer()
-                            if settingsVM.selectedAmbientSound == sound.value {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(Color("Burgundy"))
-                            }
-                        }
-                        .padding()
-                        .background(Color("LightPeach").opacity(0.5))
-                        .cornerRadius(10)
-                    }
-                    .buttonStyle(.plain)
+                    Text(sound.label).tag(sound.value)
                 }
             }
+            .pickerStyle(.menu)
+            .padding(.leading, -12)
+            .tint(Color("Burgundy"))
         }
     }
-
+    
     // MARK: - Reminder Sheet
 
     private var reminderSheet: some View {
@@ -201,6 +188,7 @@ struct SettingsView: View {
     private func settingCard<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 15, content: content)
             .padding()
+            .frame(width: 380, alignment: .top)
             .background(Color.white)
             .cornerRadius(15)
             .shadow(color: Color.black.opacity(0.05), radius: 5, x: 0, y: 2)
