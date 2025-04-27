@@ -5,11 +5,11 @@ Unlike traditional to-do apps, Chrono assigns a countdown to each task, promotin
 
 💡 Why Chrono?
 
-	•	⏳ Time-bound tasks encourage focused sessions
-	•	🔒 Deep Focus Mode discards progress if the countdown is interrupted.
-	•	🎧 Ambient sounds play even in the background, lock screen, and silent mode.
-	•	📅 Daily tasks reset every new day automatically.
-	•	📊 Calendar view helps track daily progress, goals, and focus time.
+	• ⏳ Time-bound tasks encourage focused sessions
+	• 🔒 Deep Focus Mode discards progress if the countdown is interrupted.
+	• 🎧 Ambient sounds play even in the background, lock screen, and silent mode.
+	• 📅 Daily tasks reset every new day automatically.
+	• 📊 Calendar view helps track daily progress, goals, and focus time.
 
 
 ⚙️ Used Techs:
