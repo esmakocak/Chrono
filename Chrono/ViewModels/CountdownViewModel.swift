@@ -90,6 +90,7 @@ class CountdownViewModel: ObservableObject, Identifiable {
         if timeRemaining <= 0 {
             timeRemaining = 0
             stopTimer()
+            SoundManager.shared.playCompletionSound() 
             DispatchQueue.main.async {
                 self.onCountdownFinished?()
             }
