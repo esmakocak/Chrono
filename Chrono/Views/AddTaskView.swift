@@ -62,6 +62,7 @@ struct AddTaskView: View {
                 
                 // Wheel style picker
                 HStack(spacing: 0) {
+                    // Saat picker
                     Picker("Saat", selection: $selectedHours) {
                         ForEach(0..<13, id: \.self) { hour in
                             Text("\(hour) hour").tag(hour)
@@ -69,7 +70,11 @@ struct AddTaskView: View {
                     }
                     .pickerStyle(.wheel)
                     .frame(width: 150)
+                    .clipped()
+                    .contentShape(Rectangle())
+                    .allowsHitTesting(true)
 
+                    // Dakika picker
                     Picker("Dakika", selection: $selectedMinutes) {
                         ForEach([0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55], id: \.self) { minute in
                             Text("\(minute) min").tag(minute)
@@ -77,6 +82,9 @@ struct AddTaskView: View {
                     }
                     .pickerStyle(.wheel)
                     .frame(width: 150)
+                    .clipped()
+                    .contentShape(Rectangle())
+                    .allowsHitTesting(true)
                 }
                 .frame(height: 120)
 
