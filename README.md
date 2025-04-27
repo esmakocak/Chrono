@@ -24,6 +24,8 @@ Unlike traditional to-do apps, Chrono assigns a countdown to each task, promotin
 - **Swift Concurrency** – @MainActor, async/await for clean timer logic
 - **MVVM Architecture** – Clean separation of logic and UI
 - **Custom Gestures** – Swipe-to-delete implementation
+- **UserNotifications** – Daily reminder scheduling
+- **Haptics** – Tactile feedback for actions
 
 ![9](https://github.com/user-attachments/assets/5e6b1c20-53e4-49f0-a0c7-78d2c90e9bf9)
 
