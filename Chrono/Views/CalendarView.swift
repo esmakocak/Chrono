@@ -105,13 +105,12 @@ struct CalendarView: View {
                 let isSelected = vm.isSelected(date)
 
                 Circle()
-                    .fill(Color("Burgundy").opacity(ratio == 0 ? 0.1 : 0.4 + (0.6 * ratio)))
+                    .fill(heatmapColor(for: ratio))
                     .frame(width: isToday ? 42 : 36, height: isToday ? 42 : 36)
                     .overlay(
                         Text("\(calendar.component(.day, from: date))")
                             .foregroundColor(.white)
-                            .font(.system(size: 14, weight: .semibold))
-                    )
+                            .font(.system(size: isToday ? 16 : 14, weight: isToday ? .bold : .semibold))                    )
                     .overlay(
                         Circle().stroke(Color.black, lineWidth: isSelected ? 2 : 0)
                     )
@@ -148,6 +147,23 @@ struct CalendarView: View {
         .padding(.top)
     }
 
+    private func heatmapColor(for ratio: Double) -> Color {
+        switch ratio {
+        case 0.0:
+            return Color("Burgundy").opacity(0.1)
+        case 0.01..<0.25:
+            return Color("Burgundy").opacity(0.3)
+        case 0.25..<0.5:
+            return Color("Burgundy").opacity(0.5)
+        case 0.5..<0.75:
+            return Color("Burgundy").opacity(0.7)
+        case 0.75...1.0:
+            return Color("Burgundy")
+        default:
+            return Color.clear
+        }
+    }
+    
     private func statsView(for date: Date) -> some View {
         let (completed, incomplete, formattedTime, percentage) = vm.stats(for: date)
 
@@ -238,3 +254,6 @@ struct CalendarView: View {
         .environmentObject(AuthManager())
         .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
 }
+
+
+

@@ -7,5 +7,8 @@
 import SwiftUI
 
 class SettingsViewModel: ObservableObject {
-    @AppStorage("isDeepFocusModeEnabled") var isDeepFocusModeEnabled: Bool = false
-} 
+    @AppStorage("isDeepFocusModeEnabled") var isDeepFocusModeEnabled = false
+    @AppStorage("reminderEnabled") var reminderEnabled = false
+    @AppStorage("reminderHour") var reminderHour: Int = 9
+    @AppStorage("reminderMinute") var reminderMinute: Int = 0
+}
