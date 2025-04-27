@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import AVFoundation
 
 class CountdownViewModel: ObservableObject, Identifiable {
     let id = UUID() // 👈 bunu ekliyoruz
@@ -70,8 +71,16 @@ class CountdownViewModel: ObservableObject, Identifiable {
         timer = nil
     }
     
-    func toggleTimer() {
-        isRunning ? stopTimer() : startTimer()
+    func toggleTimer(selectedSound: String) {
+        if isRunning {
+            stopTimer()
+            SoundManager.shared.stop()
+        } else {
+            startTimer()
+            if selectedSound != "None" {
+                SoundManager.shared.playSound(named: selectedSound)
+            }
+        }
     }
     
     private func updateTimeRemaining() {

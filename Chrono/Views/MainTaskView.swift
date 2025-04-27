@@ -12,6 +12,7 @@ struct MainTaskView: View {
     @Environment(\.managedObjectContext) var context
     @EnvironmentObject var viewModel: TaskViewModel
     @Environment(\.scenePhase) private var scenePhase
+    @StateObject var settingsVM = SettingsViewModel()
 
     @State private var isPresentingAddTask = false
     @State private var selectedCountdownVM: CountdownViewModel?
@@ -95,6 +96,7 @@ struct MainTaskView: View {
             .fullScreenCover(item: $selectedCountdownVM) { vm in
                 CountdownView(viewModel: vm)
                     .environmentObject(viewModel)
+                    .environmentObject(settingsVM)
             }
             .onChange(of: scenePhase) { newPhase in
                 if newPhase == .active {

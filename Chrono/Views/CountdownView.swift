@@ -13,7 +13,8 @@ struct CountdownView: View {
     @EnvironmentObject var taskViewModel: TaskViewModel
     @State private var showCompletedAlert = false
     @State private var showExitConfirmation = false
-
+    @EnvironmentObject var settingsVM: SettingsViewModel
+    
     var body: some View {
         ZStack {
             Color("BgColor").ignoresSafeArea()
@@ -37,44 +38,44 @@ struct CountdownView: View {
                     Spacer()
                 }
                 .padding(.top)
-
+                
                 // Task Title
                 Text(viewModel.task.title ?? "task")
                     .font(.system(size: 24, weight: .bold))
                     .foregroundColor(Color("Burgundy"))
                     .padding(.bottom, 20)
-
+                
                 // Progress Ring
                 ZStack {
                     Circle()
                         .stroke(Color("LightPeach"), lineWidth: 20)
                         .frame(width: 220, height: 220)
-
+                    
                     Circle()
                         .trim(from: 0.0, to: viewModel.progress)
                         .stroke(Color("Burgundy"), style: StrokeStyle(lineWidth: 20, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                         .frame(width: 220, height: 220)
                         .animation(.linear(duration: 1), value: viewModel.timeRemaining)
-
+                    
                     Text(viewModel.formattedTime)
                         .font(.system(size: 36, weight: .bold))
                         .foregroundColor(Color("Burgundy"))
                 }
                 .padding(.bottom, 40)
-
+                
                 // Pause / Resume Button
                 Button {
-                    viewModel.toggleTimer()
-                } label: {
-                    Image(systemName: viewModel.isRunning ? "pause.fill" : "play.fill")
-                        .foregroundColor(.white)
-                        .font(.title2)
-                        .frame(width: 60, height: 60)
-                        .background(Circle().fill(Color("Burgundy")))
-                }
-                .padding(.bottom, 20)
-
+                    viewModel.toggleTimer(selectedSound: settingsVM.selectedAmbientSound)}
+                label: {
+                        Image(systemName: viewModel.isRunning ? "pause.fill" : "play.fill")
+                            .foregroundColor(.white)
+                            .font(.title2)
+                            .frame(width: 60, height: 60)
+                            .background(Circle().fill(Color("Burgundy")))
+                    }
+                    .padding(.bottom, 20)
+                
                 Spacer()
             }
             .padding()
@@ -89,7 +90,9 @@ struct CountdownView: View {
         }
         .onDisappear {
             viewModel.stopTimer()
-
+            
+            SoundManager.shared.stop()
+            
             if viewModel.isDeepFocusModeEnabled {
                 // Derin odak modundaysa süre sıfırlanır
                 viewModel.timeRemaining = viewModel.task.duration
@@ -106,7 +109,7 @@ struct CountdownView: View {
                 dismiss()
             }
             Button("Cancel", role: .cancel) {
-                viewModel.isRunning = true 
+                viewModel.isRunning = true
             }
         } message: {
             Text("If you leave now, your progress will be lost.")
@@ -129,10 +132,11 @@ struct CountdownView: View {
     task.duration = 20
     task.isCompleted = false
     task.date = Date()
-
+    
     return NavigationStack {
         CountdownView(viewModel: CountdownViewModel(task: task))
             .environmentObject(TaskViewModel(context: context))
             .environment(\.managedObjectContext, context)
+            .environmentObject(SettingsViewModel())
     }
 }

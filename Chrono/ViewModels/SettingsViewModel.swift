@@ -11,4 +11,5 @@ class SettingsViewModel: ObservableObject {
     @AppStorage("reminderEnabled") var reminderEnabled = false
     @AppStorage("reminderHour") var reminderHour: Int = 9
     @AppStorage("reminderMinute") var reminderMinute: Int = 0
+    @AppStorage("selectedAmbientSound") var selectedAmbientSound: String = "None"
 }
